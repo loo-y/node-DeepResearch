@@ -639,13 +639,16 @@ export async function getResponse(
                         default:
                             results = { results: [] }
                     }
-                    const minResults = results.results.map(r => ({
+                    const minResults = results.results.map((r: Record<string, any>) => ({
                         title: r.title,
                         url: r.url,
                         description: r.description,
                     }))
 
-                    Object.assign(allURLs, Object.fromEntries(minResults.map(r => [r.url, r.title])))
+                    Object.assign(
+                        allURLs,
+                        Object.fromEntries(minResults.map((r: Record<string, any>) => [r.url, r.title]))
+                    )
                     searchResults.push({ query, results: minResults })
                     allKeywords.push(query)
                 }
@@ -653,11 +656,13 @@ export async function getResponse(
                 allKnowledge.push({
                     question: `What do Internet say about ${thisStep.searchQuery}?`,
                     answer: removeHTMLtags(
-                        searchResults.map(r => r.results.map(r => r.description).join('; ')).join('; ')
+                        searchResults
+                            .map(r => r.results.map((r: Record<string, any>) => r.description).join('; '))
+                            .join('; ')
                     ),
                     // flatten into one url list, and take unique urls
                     references: searchResults
-                        .map(r => r.results.map(r => r.url))
+                        .map(r => r.results.map((r: Record<string, any>) => r.url))
                         .flat()
                         .filter((v, i, a) => a.indexOf(v) === i),
                     type: 'side-info',

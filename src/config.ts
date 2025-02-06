@@ -70,5 +70,5 @@ export const modelConfigs: ToolConfigs = {
 
 export const STEP_SLEEP = 1000
 
-if (!GEMINI_API_KEY) throw new Error('GEMINI_API_KEY not found')
+if (!GEMINI_API_KEY && !OPENAI_API_KEY) throw new Error('GEMINI_API_KEY or OPENAI_API_KEY not found')
 if (!JINA_API_KEY) throw new Error('JINA_API_KEY not found')
