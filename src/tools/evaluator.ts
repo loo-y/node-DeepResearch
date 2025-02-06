@@ -1,36 +1,37 @@
-import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
-import { GEMINI_API_KEY, modelConfigs } from "../config";
-import { TokenTracker } from "../utils/token-tracker";
+import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai'
+import { GEMINI_API_KEY, modelConfigs } from '../config'
+import { TokenTracker } from '../utils/token-tracker'
 
-import { EvaluationResponse } from '../types';
+import { EvaluationResponse } from '../types'
 
 const responseSchema = {
-  type: SchemaType.OBJECT,
-  properties: {
-    is_definitive: {
-      type: SchemaType.BOOLEAN,
-      description: "Whether the answer provides a definitive response without uncertainty or 'I don't know' type statements"
+    type: SchemaType.OBJECT,
+    properties: {
+        is_definitive: {
+            type: SchemaType.BOOLEAN,
+            description:
+                "Whether the answer provides a definitive response without uncertainty or 'I don't know' type statements",
+        },
+        reasoning: {
+            type: SchemaType.STRING,
+            description: "Explanation of why the answer is or isn't definitive",
+        },
     },
-    reasoning: {
-      type: SchemaType.STRING,
-      description: "Explanation of why the answer is or isn't definitive"
-    }
-  },
-  required: ["is_definitive", "reasoning"]
-};
+    required: ['is_definitive', 'reasoning'],
+}
 
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+const genAI = new GoogleGenerativeAI(GEMINI_API_KEY)
 const model = genAI.getGenerativeModel({
-  model: modelConfigs.evaluator.model,
-  generationConfig: {
-    temperature: modelConfigs.evaluator.temperature,
-    responseMimeType: "application/json",
-    responseSchema: responseSchema
-  }
-});
+    model: modelConfigs.evaluator.model,
+    generationConfig: {
+        temperature: modelConfigs.evaluator.temperature,
+        responseMimeType: 'application/json',
+        responseSchema: responseSchema,
+    },
+})
 
 function getPrompt(question: string, answer: string): string {
-  return `You are an evaluator of answer definitiveness. Analyze if the given answer provides a definitive response or not.
+    return `You are an evaluator of answer definitiveness. Analyze if the given answer provides a definitive response or not.
 
 Core Evaluation Criterion:
 - Definitiveness: "I don't know", "lack of information", "doesn't exist", "not sure" or highly uncertain/ambiguous responses are **not** definitive, must return false!
@@ -60,46 +61,50 @@ Evaluation: {
 
 Now evaluate this pair:
 Question: ${JSON.stringify(question)}
-Answer: ${JSON.stringify(answer)}`;
+Answer: ${JSON.stringify(answer)}`
 }
 
-export async function evaluateAnswer(question: string, answer: string, tracker?: TokenTracker): Promise<{ response: EvaluationResponse, tokens: number }> {
-  try {
-    const prompt = getPrompt(question, answer);
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const usage = response.usageMetadata;
-    const json = JSON.parse(response.text()) as EvaluationResponse;
-    console.log('Evaluation:', {
-      definitive: json.is_definitive,
-      reason: json.reasoning
-    });
-    const tokens = usage?.totalTokenCount || 0;
-    (tracker || new TokenTracker()).trackUsage('evaluator', tokens);
-    return { response: json, tokens };
-  } catch (error) {
-    console.error('Error in answer evaluation:', error);
-    throw error;
-  }
+export async function evaluateAnswer(
+    question: string,
+    answer: string,
+    tracker?: TokenTracker
+): Promise<{ response: EvaluationResponse; tokens: number }> {
+    try {
+        const prompt = getPrompt(question, answer)
+        const result = await model.generateContent(prompt)
+        const response = await result.response
+        const usage = response.usageMetadata
+        const json = JSON.parse(response.text()) as EvaluationResponse
+        console.log('Evaluation:', {
+            definitive: json.is_definitive,
+            reason: json.reasoning,
+        })
+        const tokens = usage?.totalTokenCount || 0
+        ;(tracker || new TokenTracker()).trackUsage('evaluator', tokens)
+        return { response: json, tokens }
+    } catch (error) {
+        console.error('Error in answer evaluation:', error)
+        throw error
+    }
 }
 
 // Example usage
 async function main() {
-  const question = process.argv[2] || '';
-  const answer = process.argv[3] || '';
+    const question = process.argv[2] || ''
+    const answer = process.argv[3] || ''
 
-  if (!question || !answer) {
-    console.error('Please provide both question and answer as command line arguments');
-    process.exit(1);
-  }
+    if (!question || !answer) {
+        console.error('Please provide both question and answer as command line arguments')
+        process.exit(1)
+    }
 
-  try {
-    await evaluateAnswer(question, answer);
-  } catch (error) {
-    console.error('Failed to evaluate answer:', error);
-  }
+    try {
+        await evaluateAnswer(question, answer)
+    } catch (error) {
+        console.error('Failed to evaluate answer:', error)
+    }
 }
 
 if (require.main === module) {
-  main().catch(console.error);
+    main().catch(console.error)
 }

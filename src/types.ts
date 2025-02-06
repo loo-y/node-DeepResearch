@@ -1,162 +1,162 @@
-import { SchemaType } from "@google/generative-ai";
+import { SchemaType } from '@google/generative-ai'
 
 // Action Types
 type BaseAction = {
-  action: "search" | "answer" | "reflect" | "visit";
-  think: string;
-};
+    action: 'search' | 'answer' | 'reflect' | 'visit'
+    think: string
+}
 
 export type SearchAction = BaseAction & {
-  action: "search";
-  searchQuery: string;
-};
+    action: 'search'
+    searchQuery: string
+}
 
 export type AnswerAction = BaseAction & {
-  action: "answer";
-  answer: string;
-  references: Array<{
-    exactQuote: string;
-    url: string;
-  }>;
-};
+    action: 'answer'
+    answer: string
+    references: Array<{
+        exactQuote: string
+        url: string
+    }>
+}
 
 export type ReflectAction = BaseAction & {
-  action: "reflect";
-  questionsToAnswer: string[];
-};
+    action: 'reflect'
+    questionsToAnswer: string[]
+}
 
 export type VisitAction = BaseAction & {
-  action: "visit";
-  URLTargets: string[];
-};
+    action: 'visit'
+    URLTargets: string[]
+}
 
-export type StepAction = SearchAction | AnswerAction | ReflectAction | VisitAction;
+export type StepAction = SearchAction | AnswerAction | ReflectAction | VisitAction
 
 // Response Types
 export interface TokenUsage {
-  tool: string;
-  tokens: number;
+    tool: string
+    tokens: number
 }
 
 export interface SearchResponse {
-  code: number;
-  status: number;
-  data: Array<{
-    title: string;
-    description: string;
-    url: string;
-    content: string;
-    usage: { tokens: number; };
-  }> | null;
-  name?: string;
-  message?: string;
-  readableMessage?: string;
+    code: number
+    status: number
+    data: Array<{
+        title: string
+        description: string
+        url: string
+        content: string
+        usage: { tokens: number }
+    }> | null
+    name?: string
+    message?: string
+    readableMessage?: string
 }
 
 export interface BraveSearchResponse {
-  web: {
-    results: Array<{
-      title: string;
-      description: string;
-      url: string;
-    }>;
-  };
+    web: {
+        results: Array<{
+            title: string
+            description: string
+            url: string
+        }>
+    }
 }
 
 export type DedupResponse = {
-  think: string;
-  unique_queries: string[];
-};
+    think: string
+    unique_queries: string[]
+}
 
 export interface ReadResponse {
-  code: number;
-  status: number;
-  data?: {
-    title: string;
-    description: string;
-    url: string;
-    content: string;
-    usage: { tokens: number; };
-  };
-  name?: string;
-  message?: string;
-  readableMessage?: string;
+    code: number
+    status: number
+    data?: {
+        title: string
+        description: string
+        url: string
+        content: string
+        usage: { tokens: number }
+    }
+    name?: string
+    message?: string
+    readableMessage?: string
 }
 
 export type EvaluationResponse = {
-  is_definitive: boolean;
-  reasoning: string;
-};
+    is_definitive: boolean
+    reasoning: string
+}
 
 export type ErrorAnalysisResponse = {
-  recap: string;
-  blame: string;
-  improvement: string;
-};
+    recap: string
+    blame: string
+    improvement: string
+}
 
 export interface SearchResult {
-  title: string;
-  url: string;
-  description: string;
+    title: string
+    url: string
+    description: string
 }
 
 export interface QueryResult {
-  query: string;
-  results: SearchResult[];
+    query: string
+    results: SearchResult[]
 }
 
 export interface StepData {
-  step: number;
-  question: string;
-  action: string;
-  reasoning: string;
-  searchQuery?: string;
-  result?: QueryResult[];
+    step: number
+    question: string
+    action: string
+    reasoning: string
+    searchQuery?: string
+    result?: QueryResult[]
 }
 
 export type KeywordsResponse = {
-  think: string;
-  queries: string[];
-};
+    think: string
+    queries: string[]
+}
 
 // Schema Types
 export type SchemaProperty = {
-  type: SchemaType;
-  description: string;
-  enum?: string[];
-  items?: {
-    type: SchemaType;
-    description?: string;
-    properties?: Record<string, SchemaProperty>;
-    required?: string[];
-  };
-  properties?: Record<string, SchemaProperty>;
-  required?: string[];
-  maxItems?: number;
-};
+    type: SchemaType
+    description: string
+    enum?: string[]
+    items?: {
+        type: SchemaType
+        description?: string
+        properties?: Record<string, SchemaProperty>
+        required?: string[]
+    }
+    properties?: Record<string, SchemaProperty>
+    required?: string[]
+    maxItems?: number
+}
 
 export type ResponseSchema = {
-  type: SchemaType;
-  properties: Record<string, SchemaProperty>;
-  required: string[];
-};
+    type: SchemaType
+    properties: Record<string, SchemaProperty>
+    required: string[]
+}
 
 export interface StreamMessage {
-  type: 'progress' | 'answer' | 'error';
-  data: string | StepAction;
-  step?: number;
-  budget?: {
-    used: number;
-    total: number;
-    percentage: string;
-  };
+    type: 'progress' | 'answer' | 'error'
+    data: string | StepAction
+    step?: number
+    budget?: {
+        used: number
+        total: number
+        percentage: string
+    }
 }
 
 // Tracker Types
-import { TokenTracker } from './utils/token-tracker';
-import { ActionTracker } from './utils/action-tracker';
+import { TokenTracker } from './utils/token-tracker'
+import { ActionTracker } from './utils/action-tracker'
 
 export interface TrackerContext {
-  tokenTracker: TokenTracker;
-  actionTracker: ActionTracker;
+    tokenTracker: TokenTracker
+    actionTracker: ActionTracker
 }
