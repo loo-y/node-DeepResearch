@@ -5,13 +5,24 @@
   "scripts": {
     "build": "tsc",
     "dev": "npx ts-node src/agent.ts",
+    "dev-siliconflow": "npx ts-node src/agent-siliconflow.ts",
     "search": "npx ts-node src/test-duck.ts",
     "rewrite": "npx ts-node src/tools/query-rewriter.ts",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "serve": "ts-node src/server.ts",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "prettierformat": "prettier --write",
+    "prettierall": "prettier --write .",
+    "lint-staged": "lint-staged"
+  },
+  "precommit": "lint-staged",
+  "lint-staged": {
+    "./**/*.{js,jsx,ts,tsx}": [
+      "npm run prettierformat",
+      "git add ."
+    ]
   },
   "keywords": [],
   "author": "",
@@ -27,6 +38,7 @@
     "duck-duck-scrape": "^2.2.7",
     "express": "^4.21.2",
     "node-fetch": "^3.3.2",
+    "openai": "^4.83.0",
     "undici": "^7.3.0"
   },
   "devDependencies": {
@@ -37,6 +49,9 @@
     "dotenv": "^16.4.7",
     "eslint": "^8.56.0",
     "jest": "^29.7.0",
+    "lint-staged": "^15.4.3",
+    "pre-commit": "^1.2.2",
+    "prettier": "^3.4.2",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
