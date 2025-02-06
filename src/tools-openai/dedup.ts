@@ -1,5 +1,5 @@
 import { SchemaType } from '@google/generative-ai'
-import { OPENAI_API_KEY, OPENAI_BASE_URL } from '../config'
+import { OPENAI_API_KEY, OPENAI_BASE_URL, OPENAI_MODEL } from '../config'
 import { TokenTracker } from '../utils/token-tracker'
 import OpenAI from 'openai'
 import { DedupResponse } from '../types'
@@ -89,7 +89,8 @@ export async function dedupQueries(
         const prompt = getPrompt(newQueries, existingQueries)
 
         const completion = await genOpenAI.chat.completions.create({
-            model: `deepseek-ai/DeepSeek-R1-Distill-Llama-70B`,
+            model: OPENAI_MODEL,
+            max_completion_tokens: 4096,
             messages: [
                 {
                     role: 'user',

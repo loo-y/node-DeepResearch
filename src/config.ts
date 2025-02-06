@@ -28,6 +28,7 @@ if (process.env.https_proxy) {
     }
 }
 
+export const OPENAI_MODEL = process.env.OPENAI_MODEL as string
 export const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL as string
 export const OPENAI_API_KEY = process.env.OPENAI_API_KEY as string
 export const GEMINI_API_KEY = process.env.GEMINI_API_KEY as string

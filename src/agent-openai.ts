@@ -7,7 +7,7 @@ import { rewriteQuery } from './tools-openai/query-rewriter'
 import { dedupQueries } from './tools-openai/dedup'
 import { evaluateAnswer } from './tools-openai/evaluator'
 import { analyzeSteps } from './tools-openai/error-analyzer'
-import { OPENAI_API_KEY, OPENAI_BASE_URL, SEARCH_PROVIDER, STEP_SLEEP } from './config'
+import { OPENAI_API_KEY, OPENAI_BASE_URL, SEARCH_PROVIDER, STEP_SLEEP, OPENAI_MODEL } from './config'
 import { TokenTracker } from './utils/token-tracker'
 import { ActionTracker } from './utils/action-tracker'
 import { StepAction, SchemaProperty, ResponseSchema, AnswerAction } from './types'
@@ -409,7 +409,8 @@ export async function getResponse(
         const schema = getSchema(allowReflect, allowRead, allowAnswer, allowSearch)
         // console.log(`schema`, schema)
         const completion = await genOpenAI.chat.completions.create({
-            model: `deepseek-ai/DeepSeek-R1-Distill-Llama-70B`,
+            model: OPENAI_MODEL,
+            max_completion_tokens: 4096,
             messages: [
                 {
                     role: 'user',
@@ -769,7 +770,8 @@ export async function getResponse(
         const newschema = getSchema(false, false, allowAnswer, false)
         console.log(`schema`, newschema)
         const completion = await genOpenAI.chat.completions.create({
-            model: `deepseek-ai/DeepSeek-R1-Distill-Llama-70B`,
+            model: OPENAI_MODEL,
+            max_completion_tokens: 4096,
             messages: [
                 {
                     role: 'user',

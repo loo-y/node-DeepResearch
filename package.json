@@ -5,7 +5,7 @@
     "scripts": {
         "build": "tsc",
         "dev": "npx ts-node src/agent.ts",
-        "dev-siliconflow": "npx ts-node src/agent-siliconflow.ts",
+        "dev-openai": "npx ts-node src/agent-openai.ts",
         "search": "npx ts-node src/test-duck.ts",
         "rewrite": "npx ts-node src/tools/query-rewriter.ts",
         "lint": "eslint . --ext .ts",
