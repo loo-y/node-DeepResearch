@@ -30,6 +30,7 @@
     "description": "",
     "dependencies": {
         "@google/generative-ai": "0.21.0",
+        "@tavily/core": "0.0.3",
         "@types/cors": "^2.8.17",
         "@types/express": "^5.0.0",
         "@types/node-fetch": "^2.6.12",
@@ -37,12 +38,14 @@
         "cors": "^2.8.5",
         "duck-duck-scrape": "2.2.7",
         "express": "^4.21.2",
+        "lodash": "4.17.21",
         "node-fetch": "^3.3.2",
         "openai": "^4.83.0",
         "undici": "^7.3.0"
     },
     "devDependencies": {
         "@types/jest": "^29.5.14",
+        "@types/lodash": "4.17.15",
         "@types/node": "^22.10.10",
         "@typescript-eslint/eslint-plugin": "^7.0.1",
         "@typescript-eslint/parser": "^7.0.1",

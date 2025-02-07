@@ -12,7 +12,7 @@ import { TokenTracker } from './utils/token-tracker'
 import { ActionTracker } from './utils/action-tracker'
 import { StepAction, SchemaProperty, ResponseSchema, AnswerAction } from './types'
 import { TrackerContext } from './types'
-import { jinaSearch } from './tools/jinaSearch'
+import { jinaSearch } from './tools/webSearch'
 
 async function sleep(ms: number) {
     const seconds = Math.ceil(ms / 1000)

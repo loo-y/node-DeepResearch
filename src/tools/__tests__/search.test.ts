@@ -1,4 +1,4 @@
-import { jinaSearch } from '../jinaSearch'
+import { jinaSearch } from '../webSearch'
 import { TokenTracker } from '../../utils/token-tracker'
 
 describe('search', () => {

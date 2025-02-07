@@ -2,7 +2,9 @@ import https from 'https'
 import { TokenTracker } from '../utils/token-tracker'
 
 import { SearchResponse } from '../types'
-import { JINA_API_KEY } from '../config'
+import { JINA_API_KEY, TAVILY_API_KEY } from '../config'
+import { tavily } from '@tavily/core'
+import _ from 'lodash'
 
 export function jinaSearch(
     query: string,
@@ -57,4 +59,42 @@ export function jinaSearch(
         req.on('error', reject)
         req.end()
     })
+}
+
+export async function tavilySearch(
+    query: string,
+    tracker?: TokenTracker
+): Promise<{ response: SearchResponse; tokens: number }> {
+    if (!query.trim()) {
+        throw new Error('Query cannot be empty')
+    }
+
+    let response: SearchResponse
+    const tvly = tavily({ apiKey: TAVILY_API_KEY })
+    const tvlyResponse = await tvly.search(query, {})
+    console.log(tvlyResponse)
+
+    const { results = [], query: searchQuery } = tvlyResponse || {}
+
+    response = {
+        code: 200,
+        status: 200,
+        data: _.map(results, result => {
+            const { title, content, url, score } = result || {}
+            return {
+                title,
+                content,
+                description: content,
+                url,
+                usage: {
+                    tokens: 0,
+                },
+            }
+        }),
+    }
+    ;(tracker || new TokenTracker()).trackUsage('search', 0)
+    return {
+        response,
+        tokens: 0,
+    }
 }

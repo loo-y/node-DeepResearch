@@ -12,7 +12,7 @@ import { TokenTracker } from './utils/token-tracker'
 import { ActionTracker } from './utils/action-tracker'
 import { StepAction, SchemaProperty, ResponseSchema, AnswerAction } from './types'
 import { TrackerContext } from './types'
-import { jinaSearch } from './tools/jinaSearch'
+import { jinaSearch, tavilySearch } from './tools/webSearch'
 import OpenAI from 'openai'
 
 async function sleep(ms: number) {
@@ -169,7 +169,7 @@ ${k.question}
 ${k.answer}
 </answer>
 ${
-    k.references.length > 0
+    k?.references?.length > 0
         ? `
 <references>
 ${JSON.stringify(k.references)}
@@ -615,6 +615,7 @@ export async function getResponse(
                         case 'jina':
                             // use jinaSearch
                             results = { results: (await jinaSearch(query, context.tokenTracker)).response?.data || [] }
+                            // results = {results: (await tavilySearch(query, context.tokenTracker)).response?.data || []}
                             break
                         case 'duck':
                             results = await duckSearch(query, { safeSearch: SafeSearchType.STRICT })
